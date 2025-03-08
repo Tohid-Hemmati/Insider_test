@@ -10,22 +10,30 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     curl \
     zip \
-    vim
+    vim \
+    supervisor
 
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN mkdir -p /var/www/html
-COPY src /var/www/html
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
 WORKDIR /var/www/html
+
+COPY src /var/www/html
+
 RUN composer clear-cache && \
     composer install --optimize-autoloader --no-dev --verbose
 
+RUN npm install && npm run build
+
 COPY ./docker/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-RUN mkdir -p /var/www/html/storage/logs
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+COPY ./docker/php/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+EXPOSE 9000 5173
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

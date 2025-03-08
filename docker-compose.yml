@@ -5,18 +5,19 @@ services:
     build:
       context: .
       dockerfile: ./docker/php/Dockerfile
-    container_name:  football-league-app
+    container_name: football-league-app
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
     networks:
-      -  football-league-network
+      - football-league-network
     ports:
       - "9000:9000"
+      - "5173:5173"
 
   nginx:
     image: nginx:alpine
-    container_name:  football-league-nginx
+    container_name: football-league-nginx
     ports:
       - "8000:80"
     volumes:
@@ -25,29 +26,29 @@ services:
     depends_on:
       - app
     networks:
-      -  football-league-network
+      - football-league-network
 
   mysql:
     image: mysql:8.0
-    container_name:  football-league-mysql
+    container_name: football-league-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE:  football-league
-      MYSQL_USER:  football-league_user
-      MYSQL_PASSWORD:  football-league_password
+      MYSQL_DATABASE: football-league
+      MYSQL_USER: football-league_user
+      MYSQL_PASSWORD: football-league_password
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      -  football-league-network
+      - football-league-network
 
   mysql_test:
     image: mysql:8.0
-    container_name:  football-league-mysql-test
+    container_name: football-league-mysql-test
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE:  football-league_test
+      MYSQL_DATABASE: football-league_test
       MYSQL_USER: test_user
       MYSQL_PASSWORD: test_password
     ports:
@@ -55,13 +56,13 @@ services:
     volumes:
       - mysql_test_data:/var/lib/mysql
     networks:
-      -  football-league-network
+      - football-league-network
 
 volumes:
   mysql_data:
   mysql_test_data:
 
 networks:
-   football-league-network:
-    name: laravel- football-league
+  football-league-network:
+    name: laravel-football-league
     driver: bridge
