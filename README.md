@@ -11,9 +11,6 @@
     ```bash
     cp .env.example .env
     ```
-
-3. Configure `.env` file for database and Laravel settings.
-
 ---
 
 ## Docker Setup
