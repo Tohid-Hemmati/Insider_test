@@ -1,19 +1,14 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LeagueController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('web')->group(function () {
+    Route::post('/start-simulation', [LeagueController::class, 'startSimulation']);
+    Route::get('/standings', [LeagueController::class, 'getStandings']);
+    Route::get('/schedule', [LeagueController::class, 'getSchedule']);
+    Route::post('/simulate-next-round', [LeagueController::class, 'simulateNextRound']);
+    Route::post('/simulate-all', [LeagueController::class, 'simulateAllRemainingRounds']);
+    Route::post('/update-match', [LeagueController::class, 'updateMatch']);
+    Route::get('/champion-probabilities', [LeagueController::class, 'getChampionProbabilities']);
 });
