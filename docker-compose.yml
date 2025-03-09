@@ -6,15 +6,15 @@ services:
       context: .
       dockerfile: ./docker/php/Dockerfile
     container_name: football-league-app
-    volumes:
-      - ./src:/var/www/html
     working_dir: /var/www/html
     networks:
       - football-league-network
     ports:
       - "9000:9000"
       - "5173:5173"
-
+    depends_on:
+      mysql:
+        condition: service_healthy
   nginx:
     image: nginx:alpine
     container_name: football-league-nginx
@@ -42,25 +42,14 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - football-league-network
-
-  mysql_test:
-    image: mysql:8.0
-    container_name: football-league-mysql-test
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: football-league_test
-      MYSQL_USER: test_user
-      MYSQL_PASSWORD: test_password
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_test_data:/var/lib/mysql
-    networks:
-      - football-league-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   mysql_data:
-  mysql_test_data:
 
 networks:
   football-league-network:

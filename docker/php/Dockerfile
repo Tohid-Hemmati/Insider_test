@@ -24,10 +24,9 @@ WORKDIR /var/www/html
 
 COPY src /var/www/html
 
-RUN composer clear-cache && \
-    composer install --optimize-autoloader --no-dev --verbose
+RUN composer install --optimize-autoloader --no-dev --verbose
 
-RUN npm install && npm run build
+RUN npm install
 
 COPY ./docker/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh

@@ -4,6 +4,11 @@ chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/public/build
 chown -R www-data:www-data /var/www/html/public/build
+chmod -R 775 /var/www/html/storage/framework/sessions
+chmod -R 777 /var/www/html/storage
+
+npm run build
+
 php artisan config:cache
 
 php artisan migrate --force
